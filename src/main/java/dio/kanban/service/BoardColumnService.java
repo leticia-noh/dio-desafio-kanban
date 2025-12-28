@@ -29,8 +29,7 @@ public class BoardColumnService {
     }
 
     public List<BoardColumn> findByBoardId(Long id) {
-        return repository.findAllByBoard_Id(id);
+        return repository.findAllByBoard_IdOrderByOrder(id);
     }
-
 
 }

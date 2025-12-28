@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
     List<BoardColumn> findAllByBoard_Id(Long boardId);
+
+    List<BoardColumn> findAllByBoard_IdOrderByOrder(Long boardId);
 }
