@@ -12,11 +12,10 @@ import java.util.List;
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
 
     @Query(value= """
-    SELECT b.id, b.name, b.kind, COUNT(
-        SELECT c.id
-        FROM card c
-        WHERE c.board_column_id = b.id
-        ))
+    SELECT b.id, b.name, b.kind, (SELECT COUNT(c.id)
+                                    FROM card c
+                                    WHERE c.board_column_id = b.id
+                                 )
     FROM board_column b
     WHERE b.board_id = :boardId
     ORDER BY b.`order`
@@ -26,9 +25,9 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     @Query(value= """
     SELECT c.id, c.title, c.description
     FROM board_column b
-    INNER JOIN card c
+    LEFT JOIN card c
     ON c.board_column_id = b.id
-    WHERE b.id = :boardId
+    WHERE b.id = :id
     """, nativeQuery=true)
-    List<Object[]> findCardsByBoardColumnId(Long boardId);
+    List<Object[]> findCardsByBoardColumnId(Long id);
 }
