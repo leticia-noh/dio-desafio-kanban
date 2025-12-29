@@ -1,7 +1,6 @@
 package dio.kanban.service;
 
 import dio.kanban.dto.CardDetailsDto;
-import dio.kanban.entity.BoardColumn;
 import dio.kanban.entity.Card;
 import dio.kanban.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,10 @@ public class CardService {
             dto.setId(id);
             dto.setTitle(o[1].toString());
             dto.setDescription(o[2].toString());
-            dto.setBlocked(true);
 
             Timestamp ts = (Timestamp) o[3];
             dto.setBlockedAt(ts != null ? ts.toInstant().atOffset(ZoneOffset.UTC) : null);
-
+            dto.setBlocked(ts != null);
             dto.setBlockReason(o[4] != null ? o[4].toString() : "-");
             dto.setColumnId((long) o[5]);
             dto.setColumnName(o[6].toString());

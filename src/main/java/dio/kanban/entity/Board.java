@@ -15,7 +15,7 @@ public class Board {
 
     private String name;
 
-    @OneToMany(mappedBy="board", cascade= CascadeType.PERSIST, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="board", cascade={CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
     private List<BoardColumn> boardColumns;
 
     public BoardColumn returnInitialColumn() {

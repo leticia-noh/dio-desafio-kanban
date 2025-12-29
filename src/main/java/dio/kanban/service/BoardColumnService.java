@@ -33,6 +33,10 @@ public class BoardColumnService {
     public List<CardDto> findCardsByBoardColumnId(Long id) {
         List<Object[]> list = repository.findCardsByBoardColumnId(id);
 
+        if (list.isEmpty() || list.get(0)[0] == null) {
+            return null;
+        }
+
         return list.stream().map(o -> new CardDto(
                 ((long) o[0]),
                 (o[1].toString()),

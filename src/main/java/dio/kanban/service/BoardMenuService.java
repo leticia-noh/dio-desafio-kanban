@@ -67,8 +67,10 @@ public class BoardMenuService {
         BoardColumn column = boardColumnService.findById(id);
         if (column != null) {
             System.out.printf("COLUNA %s [%s]\n", column.getName().toUpperCase(), column.getKind());
-            for (CardDto c : list) {
-                System.out.printf("[%s] %s: %s\n", c.getCardId(), c.getCardTitle(), c.getCardDescription());
+            if (list != null) {
+                for (CardDto c : list) {
+                    System.out.printf("[%s] %s: %s\n", c.getCardId(), c.getCardTitle(), c.getCardDescription());
+                }
             }
             System.out.println();
         }
