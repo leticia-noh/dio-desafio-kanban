@@ -32,7 +32,7 @@ public class MainMenu {
 
         while (true) {
             System.out.println("1 - Criar um novo kanban");
-            System.out.println("2 - Selecionar um kanban existente");
+            System.out.println("2 - Visualizar um kanban existente");
             System.out.println("3 - Excluir um kanban");
             System.out.println("4 - Sair");
             option = Integer.parseInt(scanner.nextLine());
