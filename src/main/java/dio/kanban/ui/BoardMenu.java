@@ -4,6 +4,7 @@ import dio.kanban.entity.Board;
 import dio.kanban.entity.BoardColumn;
 import dio.kanban.service.BoardColumnService;
 import dio.kanban.service.BoardService;
+import dio.kanban.service.CardService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,14 +24,17 @@ public class BoardMenu {
 
     private BoardColumnService boardColumnService;
 
+    private CardService cardService;
+
     public BoardMenu(Board board) {
         this.board = board;
     }
 
     @Autowired
-    public BoardMenu(BoardService boardService, BoardColumnService boardColumnService) {
+    public BoardMenu(BoardService boardService, BoardColumnService boardColumnService, CardService cardService) {
         this.boardService = boardService;
         this.boardColumnService = boardColumnService;
+        this.cardService = cardService;
     }
 
     public void execute() {
@@ -109,6 +113,9 @@ public class BoardMenu {
     }
 
     private void showCard() {
-        
+        System.out.println("Informe o ID do card a ser consultado: ");
+        long id = Long.parseLong(scanner.nextLine());
+        cardService.showCard(id);
+
     }
 }
