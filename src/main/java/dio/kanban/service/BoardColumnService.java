@@ -1,5 +1,6 @@
 package dio.kanban.service;
 
+import dio.kanban.dto.CardDto;
 import dio.kanban.dto.BoardColumnDetailsDto;
 import dio.kanban.entity.BoardColumn;
 import dio.kanban.entity.BoardColumnKindEnum;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class BoardColumnService {
@@ -30,16 +29,33 @@ public class BoardColumnService {
         return repository.save(entity);
     }
 
-    public BoardColumn findById(Long id) {
+    public BoardColumn findById(long id) {
         return repository.findById(id).orElse(null);
     }
 
-    public List<BoardColumn> findByBoardId(Long id) {
-        return repository.findAllByBoard_IdOrderByOrder(id);
+    public List<CardDto> findCardsByBoardColumnId(Long id) {
+        List<Object[]> list = repository.findCardsByBoardColumnId(id);
+
+        return list.stream().map(o -> new CardDto(
+                ((long) o[0]),
+                (o[1].toString()),
+                (o[2].toString())
+                )).toList();
     }
 
-    public List<BoardColumnDetailsDto> findByBoardIdWithCount(Long id) {
-        List<Object[]> list = repository.findByBoardIdWithCount(id);
+    public void showColumn(long id) {
+        List<CardDto> list = findCardsByBoardColumnId(id);
+        BoardColumn column = findById(id);
+        if (column != null) {
+            System.out.printf("COLUNA %s [%s]\n]", column.getName().toUpperCase(), column.getKind());
+            for (CardDto c : list) {
+                System.out.printf("[%s] %s: %s\n", c.getCardId(), c.getCardTitle(), c.getCardDescription());
+            }
+        }
+    }
+
+    public List<BoardColumnDetailsDto> findByBoardIdWithCount(Long boardId) {
+        List<Object[]> list = repository.findByBoardIdWithCount(boardId);
         return list.stream().map(o -> new BoardColumnDetailsDto(
                 ((long) o[0]),
                 (o[1].toString()),

@@ -1,11 +1,14 @@
 package dio.kanban.ui;
 
 import dio.kanban.entity.Board;
+import dio.kanban.entity.BoardColumn;
+import dio.kanban.service.BoardColumnService;
 import dio.kanban.service.BoardService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Scanner;
 
 @AllArgsConstructor
@@ -16,15 +19,18 @@ public class BoardMenu {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    private BoardService service;
+    private BoardService boardService;
+
+    private BoardColumnService boardColumnService;
 
     public BoardMenu(Board board) {
         this.board = board;
     }
 
     @Autowired
-    public BoardMenu(BoardService service) {
-        this.service = service;
+    public BoardMenu(BoardService boardService, BoardColumnService boardColumnService) {
+        this.boardService = boardService;
+        this.boardColumnService = boardColumnService;
     }
 
     public void execute() {
@@ -84,11 +90,22 @@ public class BoardMenu {
     }
 
     private void showKanban() {
-        service.showBoardDetails(board.getId());
+        boardService.showBoardDetails(board.getId());
     }
 
     private void showColumn() {
-        
+        System.out.println("Selecione uma coluna do kanban pelo ID:");
+        board.getBoardColumns().forEach(c -> System.out.printf("%s - %s [%s]\n", c.getId(), c.getName(), c.getKind()));
+        long selectedId = Long.parseLong(scanner.nextLine());
+
+        List<Long> ids = board.getBoardColumns().stream().map(BoardColumn::getId).toList();
+
+        while  (!ids.contains(selectedId)) {
+            System.out.println("Selecione um ID válido: ");
+            board.getBoardColumns().forEach(c -> System.out.printf("%s - %s [%s]\n", c.getId(), c.getName(), c.getKind()));
+            selectedId = Long.parseLong(scanner.nextLine());
+        }
+        boardColumnService.showColumn(selectedId);
     }
 
     private void showCard() {

@@ -3,6 +3,9 @@ package dio.kanban.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 public class BoardColumn {
@@ -21,4 +24,7 @@ public class BoardColumn {
     @ManyToOne
     @JoinColumn(name="board_id")
     private Board board;
+
+    @OneToMany(mappedBy="boardColumn", cascade=CascadeType.PERSIST)
+    List<Card> cards = new ArrayList<>();
 }

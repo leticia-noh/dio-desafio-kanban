@@ -3,15 +3,13 @@ package dio.kanban.repository;
 import dio.kanban.entity.BoardColumn;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
-    List<BoardColumn> findAllByBoard_Id(Long boardId);
-
-    List<BoardColumn> findAllByBoard_IdOrderByOrder(Long boardId);
 
     @Query(value= """
     SELECT b.id, b.name, b.kind, COUNT(
@@ -20,8 +18,17 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
         WHERE c.board_column_id = b.id
         ))
     FROM board_column b
-    WHERE b.board_id = :id
+    WHERE b.board_id = :boardId
     ORDER BY b.`order`
     """, nativeQuery=true)
-    List<Object[]> findByBoardIdWithCount(Long id);
+    List<Object[]> findByBoardIdWithCount(@Param("boardId") Long boardId);
+
+    @Query(value= """
+    SELECT c.id, c.title, c.description
+    FROM board_column b
+    INNER JOIN card c
+    ON c.board_column_id = b.id
+    WHERE b.id = :boardId
+    """, nativeQuery=true)
+    List<Object[]> findCardsByBoardColumnId(Long boardId);
 }

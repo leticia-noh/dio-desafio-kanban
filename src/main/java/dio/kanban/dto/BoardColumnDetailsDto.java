@@ -1,10 +1,7 @@
 package dio.kanban.dto;
 
 import dio.kanban.entity.BoardColumnKindEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
@@ -19,4 +16,5 @@ public class BoardColumnDetailsDto {
     private BoardColumnKindEnum kind;
 
     private int cardsAmount;
+
 }

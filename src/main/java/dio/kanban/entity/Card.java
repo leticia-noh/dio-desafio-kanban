@@ -1,9 +1,6 @@
 package dio.kanban.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -17,4 +14,8 @@ public class Card {
     private String title;
 
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name="board_column_id")
+    private BoardColumn boardColumn;
 }
