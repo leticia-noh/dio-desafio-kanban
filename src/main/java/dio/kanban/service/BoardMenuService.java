@@ -1,0 +1,90 @@
+package dio.kanban.service;
+
+import dio.kanban.dto.BoardColumnDetailsDto;
+import dio.kanban.dto.CardDetailsDto;
+import dio.kanban.dto.CardDto;
+import dio.kanban.entity.Board;
+import dio.kanban.entity.BoardColumn;
+import dio.kanban.entity.Card;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class BoardMenuService {
+
+    BoardService boardService;
+
+    BoardColumnService boardColumnService;
+
+    CardService cardService;
+
+    @Autowired
+    public BoardMenuService(BoardService boardService, BoardColumnService boardColumnService, CardService cardService) {
+        this.boardService = boardService;
+        this.boardColumnService = boardColumnService;
+        this.cardService = cardService;
+    }
+
+    @Transactional
+    public void insertCard(String title, String description, long boardId) {
+        Card card = new Card();
+        card.setTitle(title);
+        card.setDescription(description);
+
+        Board board = boardService.findById(boardId);
+
+        BoardColumn boardColumn = board.returnInitialColumn();
+        card.setBoardColumn(boardColumn);
+
+        Card created = cardService.insert(card);
+        if (created == null) {
+            System.out.println("Não foi possível criar o card!\n");
+        }
+        else {
+            System.out.printf("O card foi criado com sucesso! Ele possui o ID: %s\n\n", created.getId());
+        }
+    }
+
+    public void showBoardDetails(long id) {
+        Board entity = boardService.findById(id);
+        List<BoardColumnDetailsDto> columns = boardColumnService.findByBoardIdWithCount(id);
+
+        if (entity != null) {
+            System.out.printf("\n|----- BOARD %s [ID : %s] -----|\n", entity.getName(), id);
+            columns.forEach(c -> {
+                System.out.printf("[Coluna %s][%s]: %s card(s)\n", c.getName(), c.getKind(), c.getCardsAmount());
+            });
+        }
+        System.out.println();
+    }
+
+    @Transactional(readOnly=true)
+    public void showColumn(long id) {
+        List<CardDto> list = boardColumnService.findCardsByBoardColumnId(id);
+        BoardColumn column = boardColumnService.findById(id);
+        if (column != null) {
+            System.out.printf("COLUNA %s [%s]\n", column.getName().toUpperCase(), column.getKind());
+            for (CardDto c : list) {
+                System.out.printf("[%s] %s: %s\n", c.getCardId(), c.getCardTitle(), c.getCardDescription());
+            }
+            System.out.println();
+        }
+    }
+
+    public void showCard(long id) {
+        CardDetailsDto dto = cardService.findDetailsById(id);
+
+        if (dto == null) {
+            System.out.printf("Não existe um card com o ID %s!\n\n", id);
+        }
+        else {
+            System.out.printf("\n[%s] CARD %s: %s\n", id, dto.getTitle(), dto.getDescription());
+            System.out.println(dto.isBlocked() ? "Está bloqueado pelo motivo: %s\n".formatted(dto.getBlockReason()) : "Não está bloqueado\n");
+            System.out.printf("Número de vezes bloqueado: %d\n", dto.getBlocksAmount());
+            System.out.printf("Atualmente, está na coluna %s [ID: %s]\n\n", dto.getColumnName(), dto.getColumnId());
+        }
+    }
+}

@@ -30,4 +30,6 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     WHERE b.id = :id
     """, nativeQuery=true)
     List<Object[]> findCardsByBoardColumnId(Long id);
+
+    List<BoardColumn> findAllByBoard_Id(Long boardId);
 }

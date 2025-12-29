@@ -19,6 +19,7 @@ public class BoardColumn {
     @Column(name = "`order`")
     private int order;
 
+    @Enumerated(EnumType.STRING)
     private BoardColumnKindEnum kind;
 
     @ManyToOne

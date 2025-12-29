@@ -15,6 +15,16 @@ public class Board {
 
     private String name;
 
-    @OneToMany(mappedBy="board", cascade= CascadeType.PERSIST)
+    @OneToMany(mappedBy="board", cascade= CascadeType.PERSIST, fetch=FetchType.EAGER)
     private List<BoardColumn> boardColumns;
+
+    public BoardColumn returnInitialColumn() {
+
+        for (BoardColumn c : boardColumns) {
+            if (c.getKind().equals(BoardColumnKindEnum.INITIAL)) {
+                return c;
+            }
+        }
+        return null;
+    }
 }

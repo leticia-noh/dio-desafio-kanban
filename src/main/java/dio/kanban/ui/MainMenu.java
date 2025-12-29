@@ -18,15 +18,17 @@ public class MainMenu {
 
     private final Scanner scanner = new Scanner(System.in);
     private BoardService service;
+    private BoardMenu boardMenu;
 
     @Autowired
-    public MainMenu(BoardService service) {
+    public MainMenu(BoardService service, BoardMenu boardMenu) {
         this.service = service;
+        this.boardMenu = boardMenu;
     }
 
     public void execute() {
         System.out.println("\n-------------------------------------------------------------------------");
-        System.out.println("Bem vindo(a) ao genrenciador do Kanban, escolha a opção desejada!");
+        System.out.println("Bem vindo(a) ao gerenciador do Kanban, escolha a opção desejada!");
 
         int option = -1;
 
@@ -35,7 +37,13 @@ public class MainMenu {
             System.out.println("2 - Visualizar um kanban existente");
             System.out.println("3 - Excluir um kanban");
             System.out.println("4 - Sair");
-            option = Integer.parseInt(scanner.nextLine());
+            String answer = scanner.nextLine();
+            if (answer != null && answer.matches("-?\\d+")) {
+                option = Integer.parseInt(answer);
+            }
+            else {
+                option = -1;
+            }
 
             switch (option) {
                 case 1 -> createBoard();
@@ -117,7 +125,7 @@ public class MainMenu {
             System.out.println("Não foi encontrado um kanban com esse ID!\n");
         }
         else {
-            BoardMenu boardMenu = new BoardMenu(board);
+            boardMenu.setBoard(board);
             boardMenu.execute();
         }
 

@@ -15,6 +15,6 @@ public class BoardColumnDetailsDto {
 
     private BoardColumnKindEnum kind;
 
-    private int cardsAmount;
+    private long cardsAmount;
 
 }

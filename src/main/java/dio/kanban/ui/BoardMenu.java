@@ -2,12 +2,12 @@ package dio.kanban.ui;
 
 import dio.kanban.entity.Board;
 import dio.kanban.entity.BoardColumn;
-import dio.kanban.service.BoardColumnService;
-import dio.kanban.service.BoardService;
-import dio.kanban.service.CardService;
+import dio.kanban.service.BoardMenuService;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Scanner;
@@ -16,25 +16,16 @@ import java.util.Scanner;
 @Component
 public class BoardMenu {
 
+    @Setter
     private Board board;
 
     private final Scanner scanner = new Scanner(System.in);
 
-    private BoardService boardService;
-
-    private BoardColumnService boardColumnService;
-
-    private CardService cardService;
-
-    public BoardMenu(Board board) {
-        this.board = board;
-    }
+    private BoardMenuService service;
 
     @Autowired
-    public BoardMenu(BoardService boardService, BoardColumnService boardColumnService, CardService cardService) {
-        this.boardService = boardService;
-        this.boardColumnService = boardColumnService;
-        this.cardService = cardService;
+    public BoardMenu(BoardMenuService service) {
+        this.service = service;
     }
 
     public void execute() {
@@ -54,7 +45,13 @@ public class BoardMenu {
             System.out.println("8 - Visualizar um card");
             System.out.println("9 - Retornar ao menu anterior");
             System.out.println("10 - Sair");
-            option = Integer.parseInt(scanner.nextLine());
+            String answer = scanner.nextLine();
+            if (answer != null && answer.matches("-?\\d+")) {
+                option = Integer.parseInt(answer);
+            }
+            else {
+                option = -1;
+            }
 
             switch (option) {
                 case 1 -> createCard();
@@ -74,7 +71,13 @@ public class BoardMenu {
     }
 
     private void createCard() {
+        System.out.println("Informe o título do novo card: ");
+        String title = scanner.nextLine();
 
+        System.out.println("Dê uma descrição para o card: ");
+        String description = scanner.nextLine();
+
+        service.insertCard(title, description, board.getId());
     }
 
     private void moveCard() {
@@ -94,10 +97,10 @@ public class BoardMenu {
     }
 
     private void showKanban() {
-        boardService.showBoardDetails(board.getId());
+        service.showBoardDetails(board.getId());
     }
 
-    private void showColumn() {
+    protected void showColumn() {
         System.out.println("Selecione uma coluna do kanban pelo ID:");
         board.getBoardColumns().forEach(c -> System.out.printf("%s - %s [%s]\n", c.getId(), c.getName(), c.getKind()));
         long selectedId = Long.parseLong(scanner.nextLine());
@@ -105,17 +108,16 @@ public class BoardMenu {
         List<Long> ids = board.getBoardColumns().stream().map(BoardColumn::getId).toList();
 
         while  (!ids.contains(selectedId)) {
-            System.out.println("Selecione um ID válido: ");
+            System.out.print("Selecione um ID válido: ");
             board.getBoardColumns().forEach(c -> System.out.printf("%s - %s [%s]\n", c.getId(), c.getName(), c.getKind()));
             selectedId = Long.parseLong(scanner.nextLine());
         }
-        boardColumnService.showColumn(selectedId);
+        service.showColumn(selectedId);
     }
 
     private void showCard() {
-        System.out.println("Informe o ID do card a ser consultado: ");
+        System.out.print("Informe o ID do card a ser consultado: ");
         long id = Long.parseLong(scanner.nextLine());
-        cardService.showCard(id);
-
+        service.showCard(id);
     }
 }

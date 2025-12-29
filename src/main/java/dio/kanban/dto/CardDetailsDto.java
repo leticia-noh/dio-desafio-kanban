@@ -23,7 +23,7 @@ public class CardDetailsDto {
 
     String blockReason;
 
-    int blocksAmount;
+    long blocksAmount;
 
     Long columnId;
 
