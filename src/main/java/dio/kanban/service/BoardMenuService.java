@@ -173,6 +173,28 @@ public class BoardMenuService {
         }
     }
 
+    public void unblockCard(long id, String reason, Board board) {
+        CardDetailsDto dto = cardService.findDetailsById(id);
+        if (dto == null) {
+            System.out.printf("O card de ID %s não foi encontrado!\n\n", id);
+            return;
+        }
+
+        if (!dto.isBlocked()) {
+            System.out.println("O card não está bloqueado\n");
+            return;
+        }
+
+        Card card = cardService.unblock(id, reason);
+
+        if (card == null) {
+            System.out.println("Não foi possível desbloquear o card\n");
+        }
+        else {
+            System.out.printf("O card foi desbloqueado com sucesso!\n\n", card.getBoardColumn().getName());
+        }
+    }
+
     public void showBoardDetails(long id) {
         Board entity = boardService.findById(id);
         List<BoardColumnDetailsDto> columns = boardColumnService.findByBoardIdWithCount(id);

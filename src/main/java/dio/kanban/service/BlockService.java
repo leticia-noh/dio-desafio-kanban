@@ -18,4 +18,8 @@ public class BlockService {
     public Block insert(Block block) {
         return repository.save(block);
     }
+
+    public Block findToUnblockByCardId(long cardId) {
+        return repository.findByCard_IdAndUnblockReasonIsNull(cardId);
+    }
 }

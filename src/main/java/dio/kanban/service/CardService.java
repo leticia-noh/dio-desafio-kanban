@@ -69,6 +69,7 @@ public class CardService {
         return repository.save(card);
     }
 
+    @Transactional
     public Card block(long id, String reason) {
         Block block = new Block();
         block.setBlockReason(reason);
@@ -83,6 +84,29 @@ public class CardService {
 
         Block result = blockService.insert(block);
 
+        if (result == null) {
+            return null;
+        }
+
+        return card;
+    }
+
+    public Card unblock(long id, String reason) {
+
+        Card card = repository.findById(id).orElse(null);
+        if (card == null) {
+            return null;
+        }
+
+        Block block = blockService.findToUnblockByCardId(id);
+        if (block == null) {
+            return null;
+        }
+
+        block.setUnblockReason(reason);
+        block.setUnblockedAt(OffsetDateTime.now());
+
+        Block result = blockService.insert(block);
         if (result == null) {
             return null;
         }

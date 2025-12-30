@@ -97,7 +97,13 @@ public class BoardMenu {
     }
 
     private void unblockCard() {
+        System.out.print("Informe o ID do card a ser desbloqueado: ");
+        long id = Long.parseLong(scanner.nextLine());
 
+        System.out.print("Informe o motivo do desbloqueio: ");
+        String reason = scanner.nextLine();
+
+        service.unblockCard(id, reason, board);
     }
 
     private void cancelCard() {
