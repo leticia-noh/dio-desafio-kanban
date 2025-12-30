@@ -131,6 +131,48 @@ public class BoardMenuService {
         }
     }
 
+    public void blockCard(long id, String reason, Board board) {
+        CardDetailsDto dto = cardService.findDetailsById(id);
+        if (dto == null) {
+            System.out.printf("O card de ID %s não foi encontrado!\n\n", id);
+            return;
+        }
+
+        if (dto.isBlocked()) {
+            System.out.println("O card já está bloqueado\n");
+            return;
+        }
+
+        BoardColumn column = boardColumnService.findById(dto.getColumnId());
+        if (column == null) {
+            System.out.println("Erro ao buscar a coluna do card\n");
+            return;
+        }
+
+        if (!column.getBoard().getId().equals(board.getId())) {
+            System.out.printf("O card de ID %s não pertence ao kanban atual\n\n", id);
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.FINAL)) {
+            System.out.println("O card se encontra na coluna final. Não é possível bloqueá-lo\n");
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.CANCEL)) {
+            System.out.println("Esse card foi cancelado, não é possível bloqueá-lo\n");
+            return;
+        }
+
+        Card card = cardService.block(id, reason);
+        if (card == null) {
+            System.out.println("Não foi possível bloquear o card\n");
+        }
+        else {
+            System.out.printf("O card foi bloqueado com sucesso!\n\n", card.getBoardColumn().getName());
+        }
+    }
+
     public void showBoardDetails(long id) {
         Board entity = boardService.findById(id);
         List<BoardColumnDetailsDto> columns = boardColumnService.findByBoardIdWithCount(id);

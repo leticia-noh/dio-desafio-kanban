@@ -87,7 +87,13 @@ public class BoardMenu {
     }
 
     private void blockCard() {
+        System.out.print("Informe o ID do card a ser bloqueado: ");
+        long id = Long.parseLong(scanner.nextLine());
 
+        System.out.print("Informe o motivo do bloqueio: ");
+        String reason = scanner.nextLine();
+
+        service.blockCard(id, reason, board);
     }
 
     private void unblockCard() {
