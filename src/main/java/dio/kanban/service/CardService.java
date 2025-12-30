@@ -1,6 +1,7 @@
 package dio.kanban.service;
 
 import dio.kanban.dto.CardDetailsDto;
+import dio.kanban.entity.BoardColumn;
 import dio.kanban.entity.Card;
 import dio.kanban.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,17 @@ public class CardService {
 
     @Transactional
     public Card insert(Card card) {
+        return repository.save(card);
+    }
+
+    @Transactional
+    public Card updateColumn(long id, BoardColumn boardColumn) {
+        Card card = repository.findById(id).orElse(null);
+        if (card == null) {
+            return null;
+        }
+
+        card.setBoardColumn(boardColumn);
         return repository.save(card);
     }
 }

@@ -54,4 +54,8 @@ public class BoardColumnService {
         )).toList();
     }
 
+    public BoardColumn findByBoardIdAndOrder(long boardId, int order) {
+        return repository.findAllByBoard_IdAndOrder(boardId, order);
+    }
+
 }

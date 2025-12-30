@@ -32,4 +32,6 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     List<Object[]> findCardsByBoardColumnId(Long id);
 
     List<BoardColumn> findAllByBoard_Id(Long boardId);
+
+    BoardColumn findAllByBoard_IdAndOrder(Long boardId, int order);
 }

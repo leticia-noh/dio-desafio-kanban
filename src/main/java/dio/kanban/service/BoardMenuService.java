@@ -5,6 +5,7 @@ import dio.kanban.dto.CardDetailsDto;
 import dio.kanban.dto.CardDto;
 import dio.kanban.entity.Board;
 import dio.kanban.entity.BoardColumn;
+import dio.kanban.entity.BoardColumnKindEnum;
 import dio.kanban.entity.Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,50 @@ public class BoardMenuService {
         }
         else {
             System.out.printf("O card foi criado com sucesso! Ele possui o ID: %s\n\n", created.getId());
+        }
+    }
+
+    public void moveCard(long id, List<BoardColumn> columns) {
+        CardDetailsDto dto = cardService.findDetailsById(id);
+        if (dto == null) {
+            System.out.printf("O card de ID %s não foi encontrado!\n\n", id);
+            return;
+        }
+
+        if (dto.isBlocked()) {
+            System.out.println("O card está bloqueado, não é possível movê-lo\n");
+            return;
+        }
+
+        BoardColumn column = boardColumnService.findById(dto.getColumnId());
+        if (column == null) {
+            System.out.println("Erro ao buscar a coluna do card\n");
+            return;
+        }
+
+        if (!column.getBoard().getId().equals(columns.getFirst().getBoard().getId())) {
+            System.out.printf("O card de ID %s não pertence ao kanban atual\n\n", id);
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.FINAL)) {
+            System.out.println("O card já se encontra na coluna final. Não é mais possível movê-lo\n");
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.CANCEL)) {
+            System.out.println("Esse card foi cancelado, não é possível movê-lo\n");
+            return;
+        }
+
+        BoardColumn boardColumn = boardColumnService.findByBoardIdAndOrder(column.getBoard().getId(), column.getOrder() + 1);
+        Card updated = cardService.updateColumn(id, boardColumn);
+
+        if (updated == null) {
+            System.out.println("Não foi possível mover o card\n");
+        }
+        else {
+            System.out.printf("O card foi movido com sucesso! Agora, ele se encontra na coluna %s\n\n", updated.getBoardColumn().getName());
         }
     }
 

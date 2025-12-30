@@ -81,7 +81,9 @@ public class BoardMenu {
     }
 
     private void moveCard() {
-        
+        System.out.print("Informe o ID do card a ser movido para a próxima coluna: ");
+        long id = Long.parseLong(scanner.nextLine());
+        service.moveCard(id, board.getBoardColumns());
     }
 
     private void blockCard() {
