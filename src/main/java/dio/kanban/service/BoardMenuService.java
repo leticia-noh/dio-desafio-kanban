@@ -37,7 +37,7 @@ public class BoardMenuService {
 
         Board board = boardService.findById(boardId);
 
-        BoardColumn boardColumn = board.returnInitialColumn();
+        BoardColumn boardColumn = board.getInitialColumn();
         card.setBoardColumn(boardColumn);
 
         Card created = cardService.insert(card);
@@ -93,6 +93,44 @@ public class BoardMenuService {
         }
     }
 
+    public void cancelCard(long id, BoardColumn cancelColumn) {
+        CardDetailsDto dto = cardService.findDetailsById(id);
+        if (dto == null) {
+            System.out.printf("O card de ID %s não foi encontrado!\n\n", id);
+            return;
+        }
+
+        if (dto.isBlocked()) {
+            System.out.println("O card está bloqueado, não é possível cancelá-lo\n");
+            return;
+        }
+
+        BoardColumn column = boardColumnService.findById(dto.getColumnId());
+        if (!column.getBoard().getId().equals(cancelColumn.getBoard().getId())) {
+            System.out.printf("O card de ID %s não pertence ao kanban atual\n\n", id);
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.FINAL)) {
+            System.out.println("O card já se encontra na coluna final. Não é mais possível movê-lo\n");
+            return;
+        }
+
+        if (column.getKind().equals(BoardColumnKindEnum.CANCEL)) {
+            System.out.println("O card já está cancelado\n");
+            return;
+        }
+
+        Card updated = cardService.updateColumn(id, cancelColumn);
+
+        if (updated == null) {
+            System.out.println("Não foi possível cancelar o card\n");
+        }
+        else {
+            System.out.printf("O card foi cancelado com sucesso! Agora, ele se encontra na coluna %s\n\n", updated.getBoardColumn().getName());
+        }
+    }
+
     public void showBoardDetails(long id) {
         Board entity = boardService.findById(id);
         List<BoardColumnDetailsDto> columns = boardColumnService.findByBoardIdWithCount(id);
@@ -106,7 +144,6 @@ public class BoardMenuService {
         System.out.println();
     }
 
-    @Transactional(readOnly=true)
     public void showColumn(long id) {
         List<CardDto> list = boardColumnService.findCardsByBoardColumnId(id);
         BoardColumn column = boardColumnService.findById(id);

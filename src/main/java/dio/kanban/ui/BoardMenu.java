@@ -71,10 +71,10 @@ public class BoardMenu {
     }
 
     private void createCard() {
-        System.out.println("Informe o título do novo card: ");
+        System.out.print("Informe o título do novo card: ");
         String title = scanner.nextLine();
 
-        System.out.println("Dê uma descrição para o card: ");
+        System.out.print("Dê uma descrição para o card: ");
         String description = scanner.nextLine();
 
         service.insertCard(title, description, board.getId());
@@ -87,15 +87,19 @@ public class BoardMenu {
     }
 
     private void blockCard() {
-        
+
     }
 
     private void unblockCard() {
-        
+
     }
 
     private void cancelCard() {
-        
+        System.out.print("Informe o ID do card a ser cancelado: ");
+        long id = Long.parseLong(scanner.nextLine());
+
+        BoardColumn cancelColumn = board.getCancelColumn();
+        service.cancelCard(id, cancelColumn);
     }
 
     private void showKanban() {

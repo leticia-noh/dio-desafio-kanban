@@ -18,10 +18,19 @@ public class Board {
     @OneToMany(mappedBy="board", cascade={CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
     private List<BoardColumn> boardColumns;
 
-    public BoardColumn returnInitialColumn() {
+    public BoardColumn getInitialColumn() {
 
         for (BoardColumn c : boardColumns) {
             if (c.getKind().equals(BoardColumnKindEnum.INITIAL)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public BoardColumn getCancelColumn() {
+        for (BoardColumn c : boardColumns) {
+            if (c.getKind().equals(BoardColumnKindEnum.CANCEL)) {
                 return c;
             }
         }
