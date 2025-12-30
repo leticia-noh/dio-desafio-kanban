@@ -53,9 +53,9 @@ public class BoardMenuService {
         List<BoardColumnDetailsDto> columns = boardColumnService.findByBoardIdWithCount(id);
 
         if (entity != null) {
-            System.out.printf("\n|----- BOARD %s [ID : %s] -----|\n", entity.getName(), id);
+            System.out.printf("\n|----------- KANBAN %s [ID : %s] -----------|\n", entity.getName(), id);
             columns.forEach(c -> {
-                System.out.printf("[Coluna %s][%s]: %s card(s)\n", c.getName(), c.getKind(), c.getCardsAmount());
+                System.out.printf("| Coluna %s | %s | %s card(s) |\n", c.getName(), c.getKind(), c.getCardsAmount());
             });
         }
         System.out.println();
