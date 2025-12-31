@@ -14,6 +14,6 @@ Foi desenvolvido um projeto Spring Boot que gerencia um kanban simples através 
 
 ## Passo a passo para executar ▶️
 1. Clone o repositório: `git clone https://github.com/leticia-noh/dio-desafio-kanban.git`
-2. Entre na pasta dio-desafio-kanban: `cd dio-desafio-kanban`
+2. Entre no diretório dio-desafio-kanban: `cd dio-desafio-kanban`
 3. Para rodar a aplicação, execute o comando: `mvn spring-boot:run`
 4. Aguarde o build e interaja com a aplicação através do terminal. 
